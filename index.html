@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FilmCollab – Actors • Producers • Directors • Casting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card-bg: #151720;
+      --accent: #f7c948;
+      --accent-soft: #f7e3a3;
+      --border: #262a3a;
+      --text-main: #f5f5f5;
+      --text-muted: #9ca3af;
+      --pill-bg: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+      position: relative;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.7);
+    }
+
+    .brand-logo::before,
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      background: #111827;
+      border-radius: 2px;
+    }
+
+    .brand-logo::before {
+      width: 70%;
+      height: 18%;
+      top: 22%;
+      left: 15%;
+    }
+
+    .brand-logo::after {
+      width: 60%;
+      height: 18%;
+      top: 50%;
+      left: 20%;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      color: var(--accent-soft);
+      max-width: 420px;
+    }
+
+    .pill-row {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(249, 199, 72, 0.6);
+      background: rgba(17, 24, 39, 0.9);
+      color: var(--accent-soft);
+    }
+
+    /* Layout sections */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 840px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Card shells */
+    .card {
+      background: radial-gradient(circle at top left, #1f2937 0, #020617 60%);
+      border-radius: 16px;
+      padding: 14px 14px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.8);
+    }
+
+    .card + .card {
+      margin-top: 10px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 10px;
+      margin-top: 8px;
+    }
+
+    .form-row-full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    textarea {
+      min-height: 50px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+    }
+
+    .roles-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+    }
+
+    .roles-checkboxes label {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.75rem;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .roles-checkboxes input[type="checkbox"] {
+      accent-color: #f97316;
+      width: 14px;
+      height: 14px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #111827;
+      box-shadow: 0 12px 24px rgba(248, 181, 16, 0.35);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Search + filters */
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .search-row input[type="text"] {
+      flex: 1 1 160px;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      font-size: 0.75rem;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .filter-pill.active {
+      background: rgba(248, 181, 16, 0.1);
+      color: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    /* Profile cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .profile-card {
+      border-radius: 14px;
+      padding: 10px 10px 12px;
+      background: radial-gradient(circle at top left, #111827 0, #020617 65%);
+      border: 1px solid rgba(75, 85, 99, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .avatar-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #facc15 0, #f97316 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111827;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .profile-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .profile-location {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .role-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 4px 0;
+    }
+
+    .role-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .role-actor { border-color: #22c55e; color: #bbf7d0; }
+    .role-producer { border-color: #f97316; color: #fed7aa; }
+    .role-director { border-color: #3b82f6; color: #bfdbfe; }
+    .role-casting { border-color: #ec4899; color: #fbcfe8; }
+
+    .profile-bio {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 3px 0 4px;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .skill-tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: #cbd5f5;
+    }
+
+    .looking-for {
+      font-size: 0.75rem;
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    .profile-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .link-chip {
+      font-size: 0.7rem;
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .link-chip:hover {
+      text-decoration: underline;
+    }
+
+    .chip-ghost {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px dashed rgba(75, 85, 99, 0.9);
+    }
+
+    .btn-connect {
+      font-size: 0.75rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 181, 16, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--accent-soft);
+      cursor: pointer;
+    }
+
+    .btn-connect.saved {
+      background: rgba(248, 181, 16, 0.15);
+    }
+
+    .empty-state {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title">FilmCollab Network</div>
+          <div class="brand-sub">Actors · Producers · Directors · Casting</div>
+        </div>
+      </div>
+      <div class="tagline">
+        A lightweight collaboration board for creatives to showcase profiles,
+        discover talent, and mark people they’d like to work with.
+        <div class="pill-row">
+          <span class="pill">No login · Front-end prototype</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- LEFT: CREATE PROFILE -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Create a profile</div>
+          <div class="card-subtitle">Local-only · not shared between browsers (yet)</div>
+        </div>
+
+        <form id="profileForm">
+          <div class="form-grid">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" type="text" placeholder="Jane Doe" required />
+            </div>
+            <div>
+              <label for="location">Location</label>
+              <input id="location" type="text" placeholder="Los Angeles, CA" />
+            </div>
+
+            <div class="form-row-full">
+              <label>Roles</label>
+              <div class="roles-checkboxes">
+                <label><input type="checkbox" value="Actor" /> Actor</label>
+                <label><input type="checkbox" value="Producer" /> Producer</label>
+                <label><input type="checkbox" value="Director" /> Director</label>
+                <label><input type="checkbox" value="Casting Director" /> Casting Director</label>
+              </div>
+            </div>
+
+            <div class="form-row-full">
+              <label for="skills">Skills / tags (comma separated)</label>
+              <input id="skills" type="text" placeholder="Action, Stunts, Comedy, VO, Development" />
+            </div>
+
+            <div class="form-row-full">
+              <label for="lookingFor">Looking to connect with</label>
+              <input id="lookingFor" type="text" placeholder="Casting for gritty action roles, producers for indie thriller, directors for shorts…" />
+            </div>
+
+            <div class="form-row-full">
+              <label for="bio">Short bio</label>
+              <textarea id="bio" placeholder="Couple of lines on who you are, credits, vibe."></textarea>
+            </div>
+
+            <div>
+              <label for="linkPrimary">Primary link (reel / site)</label>
+              <input id="linkPrimary" type="url" placeholder="https://…" />
+            </div>
+            <div>
+              <label for="linkSecondary">Secondary link (IMDb / IG / AA)</label>
+              <input id="linkSecondary" type="url" placeholder="https://…" />
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn-primary">Add to board</button>
+            <button type="button" id="clearFormBtn" class="btn-ghost">Clear form</button>
+          </div>
+          <small>
+            Profiles are saved to this browser using localStorage. To make this a
+            true multi-user network later, this front-end can be wired to a backend.
+          </small>
+        </form>
+      </section>
+
+      <!-- RIGHT: SEARCH + RESULTS -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">People board</div>
+            <div class="card-subtitle">Search and filter by role or keyword</div>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by name, role, location, skill…"
+          />
+          <button type="button" id="resetFiltersBtn" class="btn-ghost">Reset filters</button>
+        </div>
+
+        <div class="filter-pills" id="filterPills">
+          <button type="button" class="filter-pill active" data-role="all">All</button>
+          <button type="button" class="filter-pill" data-role="Actor">Actors</button>
+          <button type="button" class="filter-pill" data-role="Producer">Producers</button>
+          <button type="button" class="filter-pill" data-role="Director">Directors</button>
+          <button type="button" class="filter-pill" data-role="Casting Director">Casting</button>
+        </div>
+
+        <div id="profilesContainer" class="cards-grid" style="margin-top:10px;"></div>
+        <div id="emptyState" class="empty-state" style="display:none;">
+          No profiles match your filters yet. Add someone with the form on the left.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ----- Storage setup -----
+    const STORAGE_KEY = "filmCollabProfiles_v1";
+    let profiles = [];
+    let savedConnections = new Set();
+    let activeRoleFilter = "all";
+    let searchTerm = "";
+
+    function loadProfiles() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        profiles = raw ? JSON.parse(raw) : getSeedProfiles();
+      } catch (e) {
+        profiles = getSeedProfiles();
+      }
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY + "_saved");
+        if (saved) savedConnections = new Set(JSON.parse(saved));
+      } catch (e) {}
+    }
+
+    function saveProfiles() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+      localStorage.setItem(
+        STORAGE_KEY + "_saved",
+        JSON.stringify(Array.from(savedConnections))
+      );
+    }
+
+    function getSeedProfiles() {
+      return [
+        {
+          id: "seed1",
+          name: "Aaron D.",
+          location: "Los Angeles, CA",
+          roles: ["Actor", "Producer"],
+          skills: ["Action", "Stunts", "Thriller", "Development"],
+          lookingFor: "Casting for grounded action roles, directors for proof-of-concept, producers for feature packaging.",
+          bio: "Actor-producer with a focus on elevated action/thrillers. Building out 'The Technician' and related IP.",
+          linkPrimary: "",
+          linkSecondary: ""
+        },
+        {
+          id: "seed2",
+          name: "Maya Lin",
+          location: "New York, NY",
+          roles: ["Director"],
+          skills: ["Drama", "Festival Shorts", "Visual Storytelling"],
+          lookingFor: "Producers and casting for a contained sci-fi feature.",
+          bio: "Film school grad with shorts at SXSW & Tribeca. Loves intimate genre stories with big emotional stakes.",
+          linkPrimary: "",
+          linkSecondary: ""
+        },
+        {
+          id: "seed3",
+          name: "Jordan Reyes",
+          location: "Atlanta, GA",
+          roles: ["Casting Director"],
+          skills: ["TV Casting", "Comedy", "Self-tapes"],
+          lookingFor: "Actors for a slate of streaming comedies; directors with strong comedy sensibilities.",
+          bio: "Casting associate turned indie casting director. Extensive network in Southeast markets.",
+          linkPrimary: "",
+          linkSecondary: ""
+        }
+      ];
+    }
+
+    // ----- Render -----
+    function renderProfiles() {
+      const container = document.getElementById("profilesContainer");
+      const emptyState = document.getElementById("emptyState");
+      container.innerHTML = "";
+
+      const filtered = profiles.filter(p => {
+        if (activeRoleFilter !== "all" && !p.roles.includes(activeRoleFilter)) {
+          return false;
+        }
+        if (!searchTerm) return true;
+        const t = searchTerm.toLowerCase();
+        const haystack = [
+          p.name,
+          p.location,
+          p.roles.join(" "),
+          (p.skills || []).join(" "),
+          p.bio,
+          p.lookingFor
+        ]
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(t);
+      });
+
+      if (filtered.length === 0) {
+        emptyState.style.display = "block";
+        return;
+      }
+      emptyState.style.display = "none";
+
+      filtered.forEach(profile => {
+        const card = document.createElement("article");
+        card.className = "profile-card";
+
+        const initials =
+          profile.name && profile.name.trim().length > 0
+            ? profile.name
+                .split(" ")
+                .map(p => p[0])
+                .join("")
+                .slice(0, 2)
+            : "?";
+
+        const header = document.createElement("div");
+        header.className = "profile-header";
+        header.innerHTML = `
+          <div class="avatar-circle">${initials}</div>
+          <div>
+            <div class="profile-name">${profile.name || "Unnamed"}</div>
+            <div class="profile-location">${profile.location || ""}</div>
+          </div>
+        `;
+        card.appendChild(header);
+
+        // roles
+        const roleRow = document.createElement("div");
+        roleRow.className = "role-tags";
+        (profile.roles || []).forEach(role => {
+          const span = document.createElement("span");
+          span.className = "role-tag " + roleClassFromName(role);
+          span.textContent = role;
+          roleRow.appendChild(span);
+        });
+        card.appendChild(roleRow);
+
+        // bio
+        if (profile.bio) {
+          const bio = document.createElement("div");
+          bio.className = "profile-bio";
+          bio.textContent = profile.bio;
+          card.appendChild(bio);
+        }
+
+        // skills
+        if (profile.skills && profile.skills.length) {
+          const skillsRow = document.createElement("div");
+          skillsRow.className = "skill-tags";
+          profile.skills.forEach(s => {
+            const chip = document.createElement("span");
+            chip.className = "skill-tag";
+            chip.textContent = s;
+            skillsRow.appendChild(chip);
+          });
+          card.appendChild(skillsRow);
+        }
+
+        if (profile.lookingFor) {
+          const lf = document.createElement("div");
+          lf.className = "looking-for";
+          lf.textContent = "Looking for: " + profile.lookingFor;
+          card.appendChild(lf);
+        }
+
+        // footer
+        const footer = document.createElement("div");
+        footer.className = "profile-footer";
+
+        const linksDiv = document.createElement("div");
+        if (profile.linkPrimary) {
+          const a1 = document.createElement("a");
+          a1.href = profile.linkPrimary;
+          a1.target = "_blank";
+          a1.rel = "noopener noreferrer";
+          a1.className = "link-chip";
+          a1.textContent = "Reel / Site";
+          linksDiv.appendChild(a1);
+        }
+        if (profile.linkSecondary) {
+          const a2 = document.createElement("a");
+          a2.href = profile.linkSecondary;
+          a2.target = "_blank";
+          a2.rel = "noopener noreferrer";
+          a2.className = "link-chip";
+          a2.style.marginLeft = "6px";
+          a2.textContent = "More";
+          linksDiv.appendChild(a2);
+        }
+        if (!profile.linkPrimary && !profile.linkSecondary) {
+          const ghost = document.createElement("span");
+          ghost.className = "chip-ghost";
+          ghost.textContent = "Add links in profile to share reel / socials";
+          linksDiv.appendChild(ghost);
+        }
+
+        const connectBtn = document.createElement("button");
+        connectBtn.type = "button";
+        connectBtn.className = "btn-connect";
+        connectBtn.textContent = savedConnections.has(profile.id)
+          ? "Saved contact"
+          : "Save contact";
+        if (savedConnections.has(profile.id)) {
+          connectBtn.classList.add("saved");
+        }
+        connectBtn.addEventListener("click", () => {
+          if (savedConnections.has(profile.id)) {
+            savedConnections.delete(profile.id);
+          } else {
+            savedConnections.add(profile.id);
+          }
+          saveProfiles();
+          renderProfiles();
+        });
+
+        footer.appendChild(linksDiv);
+        footer.appendChild(connectBtn);
+        card.appendChild(footer);
+
+        container.appendChild(card);
+      });
+    }
+
+    function roleClassFromName(name) {
+      const n = (name || "").toLowerCase();
+      if (n.includes("actor")) return "role-actor";
+      if (n.includes("producer")) return "role-producer";
+      if (n.includes("director") && !n.includes("casting"))
+        return "role-director";
+      if (n.includes("casting")) return "role-casting";
+      return "";
+    }
+
+    // ----- Form handling -----
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const bio = document.getElementById("bio").value.trim();
+      const lookingFor = document
+        .getElementById("lookingFor")
+        .value.trim();
+      const linkPrimary = document.getElementById("linkPrimary").value.trim();
+      const linkSecondary = document
+        .getElementById("linkSecondary")
+        .value.trim();
+
+      const roles = Array.from(
+        document.querySelectorAll(".roles-checkboxes input[type='checkbox']")
+      )
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      const skillsRaw = document.getElementById("skills").value.trim();
+      const skills =
+        skillsRaw.length > 0
+          ? skillsRaw.split(",").map(s => s.trim()).filter(Boolean)
+          : [];
+
+      if (!name) {
+        alert("Please enter a name.");
+        return;
+      }
+      if (!roles.length) {
+        alert("Please select at least one role.");
+        return;
+      }
+
+      const profile = {
+        id: "p" + Date.now(),
+        name,
+        location,
+        roles,
+        skills,
+        lookingFor,
+        bio,
+        linkPrimary,
+        linkSecondary
+      };
+
+      profiles.unshift(profile);
+      saveProfiles();
+      clearFormFields();
+      renderProfiles();
+    }
+
+    function clearFormFields() {
+      document.getElementById("profileForm").reset();
+      document.getElementById("bio").value = "";
+      document.getElementById("skills").value = "";
+      document.getElementById("lookingFor").value = "";
+    }
+
+    // ----- Filters -----
+    function setupFilters() {
+      const pills = document.querySelectorAll(".filter-pill");
+      pills.forEach(pill => {
+        pill.addEventListener("click", () => {
+          pills.forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          activeRoleFilter = pill.dataset.role;
+          renderProfiles();
+        });
+      });
+
+      const searchInput = document.getElementById("searchInput");
+      searchInput.addEventListener("input", () => {
+        searchTerm = searchInput.value.trim();
+        renderProfiles();
+      });
+
+      document
+        .getElementById("resetFiltersBtn")
+        .addEventListener("click", () => {
+          searchTerm = "";
+          activeRoleFilter = "all";
+          searchInput.value = "";
+          document
+            .querySelectorAll(".filter-pill")
+            .forEach(p => p.classList.remove("active"));
+          document
+            .querySelector(".filter-pill[data-role='all']")
+            .classList.add("active");
+          renderProfiles();
+        });
+    }
+
+    // ----- Init -----
+    document.addEventListener("DOMContentLoaded", () => {
+      loadProfiles();
+      renderProfiles();
+
+      document
+        .getElementById("profileForm")
+        .addEventListener("submit", handleFormSubmit);
+      document
+        .getElementById("clearFormBtn")
+        .addEventListener("click", clearFormFields);
+
+      setupFilters();
+    });
+  </script>
+</body>
+</html>
